@@ -1,0 +1,8 @@
+{
+    "title": "Match3",
+    "identifier": "com.felgo.game.Match3",
+    "orientation": "portrait",
+    "versioncode": 1,
+    "versionname": "1.0.0",
+    "stage": "test"
+}
