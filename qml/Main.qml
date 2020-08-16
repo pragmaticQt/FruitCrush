@@ -51,16 +51,29 @@ GameWindow {
             y: 446
         }
 
+        GameOverWindow {
+            id: gameOverWindow
+            y: 90
+            z: 10
+            opacity: 0
+            anchors.horizontalCenter: parent.horizontalCenter
+            onNewGameClicked: gameScene.startGame()
+        }
+
         GameArea {
             id: gameArea
             anchors.horizontalCenter: gameScene.horizontalCenter
             blockSize: 30
             y: 20
+
+            onGameOver: gameOverWindow.show()
         }
 
         function startGame() {
             gameArea.initializeField()
             gameScene.score = 0
+
+            gameOverWindow.hide()
         }
     }
 }
