@@ -14,16 +14,7 @@ EntityBase {
 
     Image {
         anchors.fill: parent
-        source: {
-            if (type == 0) return "../assets/Apple.png"
-            else if (type == 1) return "../assets/Banana.png"
-            else if (type == 2) return "../assets/BlueBerry.png"
-            else if (type == 3) return "../assets/Orange.png"
-            else if (type == 4) return "../assets/Pear.png"
-//            else if (type == 3) return "../assets/Coconut.png"
-//            else if (type == 4) return "../assets/Lemon.png"
-//            else /*if (type == 7)*/ return "../assets/WaterMelon.png"
-        }
+        source: fruitSource()
     }
 
     MouseArea {
@@ -71,5 +62,24 @@ EntityBase {
         fallDownAnimation.to = block.y + distance * block.height
 
         fallDownTimer.start()
+    }
+
+    function fruitSource() {
+        if (type == 0) return "../assets/Apple.png"
+        else if (type == 1) return "../assets/Banana.png"
+        else if (type == 2) return "../assets/BlueBerry.png"
+        else if (type == 3) return "../assets/Orange.png"
+        else if (type == 4) return "../assets/Pear.png"
+//            else if (type == 3) return "../assets/Coconut.png"
+//            else if (type == 4) return "../assets/Lemon.png"
+//            else /*if (type == 7)*/ return "../assets/WaterMelon.png"
+    }
+
+    enum FruitType {
+        Apple,
+        Banana,
+        BlueBerry,
+        Orange,
+        Pear
     }
 }
