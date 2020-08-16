@@ -6,6 +6,15 @@ EntityBase {
     entityType: "block"
     visible: y >= 0
 
+    enum FruitType {
+        Apple,
+        Banana,
+        BlueBerry,
+        Orange,
+        Pear,
+        Total
+    }
+
     property int type
     property int row
     property int column
@@ -65,21 +74,21 @@ EntityBase {
     }
 
     function fruitSource() {
-        if (type == 0) return "../assets/Apple.png"
-        else if (type == 1) return "../assets/Banana.png"
-        else if (type == 2) return "../assets/BlueBerry.png"
-        else if (type == 3) return "../assets/Orange.png"
-        else if (type == 4) return "../assets/Pear.png"
-//            else if (type == 3) return "../assets/Coconut.png"
-//            else if (type == 4) return "../assets/Lemon.png"
-//            else /*if (type == 7)*/ return "../assets/WaterMelon.png"
+        switch (type) {
+            case Block.FruitType.Apple:
+                return "../assets/Apple.png"
+            case Block.FruitType.Banana:
+                return "../assets/Banana.png"
+            case Block.FruitType.BlueBerry:
+                return "../assets/BlueBerry.png"
+            case Block.FruitType.Orange:
+                return "../assets/Orange.png"
+            case Block.FruitType.Pear:
+                return "../assets/Pear.png"
+            default :
+                return ""
+        }
     }
 
-    enum FruitType {
-        Apple,
-        Banana,
-        BlueBerry,
-        Orange,
-        Pear
-    }
+
 }

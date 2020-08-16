@@ -56,7 +56,7 @@ Item {
             x: column * blockSize,
             y: row * blockSize,
 
-            type: Math.floor(Math.random() * 5), // random type
+            type: Math.floor(Math.random() * Block.FruitType.Total), // random type
             row: row,
             column: column
         }
