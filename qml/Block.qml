@@ -24,6 +24,7 @@ EntityBase {
     property int column
 
     signal clicked(int row, int column, int type)
+    signal fadedout(string entityId)
 
     Image {
         anchors.fill: parent
@@ -43,7 +44,7 @@ EntityBase {
         running: false
 
         onStopped: {
-            entityManager.removeEntityById(block.entityId)
+            fadedout(block.entityId)
         }
     }
 

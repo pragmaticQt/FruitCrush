@@ -68,6 +68,7 @@ Item {
         // link click signal from block to handler function
         var entity = entityManager.getEntityById(id)
         entity.clicked.connect(handleClick)
+        entity.fadedout.connect(handleFadeout)
 
         return entity
     }
@@ -138,6 +139,10 @@ Item {
             var score = blockCount * (blockCount + 1) / 2
             gameScene.score += score
         }
+    }
+
+    function handleFadeout(entityId) {
+        entityManager.removeEntityById(entityId)
     }
 
     // move remaining blocks to the bottom and fill up columns with new blocks
