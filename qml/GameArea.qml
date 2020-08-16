@@ -11,7 +11,7 @@ Item {
     property double blockSize
     property int rows: Math.floor(height / blockSize)
     property int columns: Math.floor(width / blockSize)
-    readonly property int matches: 3
+    readonly property int matches: 3 // least connected blocks to remove
 
     property var field: []
 

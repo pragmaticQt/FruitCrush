@@ -12,11 +12,15 @@ EntityBase {
         BlueBerry,
         Orange,
         Pear,
+        //Add a new fruit before this line
         Total
     }
 
-    property int type
-    property int row
+    property int type // FruitType
+    // TopLeft as (0, 0) ---> x
+    //                   |
+    //                   Vy
+    property int row  // position in gamearea grid,
     property int column
 
     signal clicked(int row, int column, int type)
@@ -28,33 +32,31 @@ EntityBase {
 
     MouseArea {
         anchors.fill: parent
-        onClicked: parent.clicked(row, column, type)
+        onClicked: block.clicked(row, column, type)
     }
 
-    NumberAnimation {
+    NumberAnimation on opacity {
         id: fadeOutAnimation
-        target: block
-        properties: "opacity"
         duration: 100
         from: 1.0
         to: 0.0
+        running: false
 
         onStopped: {
             entityManager.removeEntityById(block.entityId)
         }
     }
 
-    NumberAnimation {
+    NumberAnimation on y {
         id: fallDownAnimation
-        target: block
-        properties: "y"
     }
 
-    Timer {
+    Timer {// one shot timer for delaying fallDownAnimation
         id: fallDownTimer
         interval: fadeOutAnimation.duration
         repeat: false
         running: false
+
         onTriggered: {
             fallDownAnimation.start()
         }
@@ -65,7 +67,8 @@ EntityBase {
     }
 
     function fallDown(distance) {
-        fallDownAnimation.complete()//Unlike stop(), complete() immediately fast-forwards the animation to its end.
+        //Unlike stop(), complete() immediately fast-forwards the animation to its end.
+        fallDownAnimation.complete()
 
         fallDownAnimation.duration = 100 * distance
         fallDownAnimation.to = block.y + distance * block.height
@@ -89,6 +92,4 @@ EntityBase {
                 return ""
         }
     }
-
-
 }
