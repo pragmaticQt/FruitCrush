@@ -13,7 +13,7 @@ Item {
     property int columns: Math.floor(width / blockSize)
     readonly property int matches: 3 // least connected blocks to remove
 
-    property var field: []
+    property var field: [] //holds blocks or entities
 
     signal gameOver()
 
@@ -233,7 +233,7 @@ Item {
                 var block = gameArea.field[i]
                 if(block !== null) {
                     gameArea.field[i] = null
-                    block.remove()
+                    block.fadeOut()
                 }
             }
         }

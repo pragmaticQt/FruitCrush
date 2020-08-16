@@ -63,7 +63,7 @@ EntityBase {
         }
     }
 
-    function remove() {
+    function fadeOut() {
         fadeOutAnimation.start()
     }
 
