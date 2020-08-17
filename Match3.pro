@@ -60,4 +60,8 @@ macx {
 }
 
 DISTFILES += \
-    qml/GameArea.qml
+    qml/game/GameArea.qml \
+    qml/game/GameBlock.qml \
+    qml/game/GameSound.qml \
+    qml/game/HighlightEffect.qml \
+    qml/game/ParticleEffect.qml

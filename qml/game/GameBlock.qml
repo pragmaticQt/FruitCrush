@@ -44,12 +44,12 @@ EntityBase {
         running: false
 
         onStarted: {
-            particleItem.opacity = 1
-            sparkleParticle.start()
+            particleEffect.start()
         }
 
         onStopped: {
-            sparkleParticle.stop()
+            particleEffect.stop()
+
             fadedout(block.entityId)
         }
     }
@@ -70,20 +70,25 @@ EntityBase {
     }
 
     // particle effect
-    Item {
-      id: particleItem
-      width: parent.width
-      height: parent.height
-      x: parent.width/2
-      y: parent.height/2
-
-      Particle {
-        id: sparkleParticle
+    ParticleEffect {
+        id: particleEffect
+        anchors.fill: parent
         fileName: "./particles/FruitySparkle.json"
-      }
-      opacity: 0
-      visible: opacity > 0
-      enabled: opacity > 0
+    }
+
+    HighlightEffect {
+        id: highlightEffect
+        anchors.fill: parent
+    }
+
+    // highlights the block to help the player find groups
+    function highlight(active) {
+        if(active) {
+            highlightEffect.activate()
+        }
+        else {
+            highlightEffect.deactivate()
+        }
     }
 
     function fadeOut() {
@@ -102,18 +107,18 @@ EntityBase {
 
     function fruitSource() {
         switch (type) {
-            case GameBlock.FruitType.Apple:
-                return "../assets/Apple.png"
-            case GameBlock.FruitType.Banana:
-                return "../assets/Banana.png"
-            case GameBlock.FruitType.BlueBerry:
-                return "../assets/BlueBerry.png"
-            case GameBlock.FruitType.Orange:
-                return "../assets/Orange.png"
-            case GameBlock.FruitType.Pear:
-                return "../assets/Pear.png"
-            default :
-                return ""
+        case GameBlock.FruitType.Apple:
+            return "../assets/Apple.png"
+        case GameBlock.FruitType.Banana:
+            return "../assets/Banana.png"
+        case GameBlock.FruitType.BlueBerry:
+            return "../assets/BlueBerry.png"
+        case GameBlock.FruitType.Orange:
+            return "../assets/Orange.png"
+        case GameBlock.FruitType.Pear:
+            return "../assets/Pear.png"
+        default :
+            return ""
         }
     }
 }
