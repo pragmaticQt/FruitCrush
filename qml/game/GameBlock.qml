@@ -6,16 +6,6 @@ EntityBase {
     entityType: "block"
     visible: y >= 0
 
-    enum FruitType {
-        Apple,
-        Banana,
-        BlueBerry,
-        Orange,
-        Pear,
-        //Add a new fruit before this line
-        Total
-    }
-
     property int type // FruitType
     // TopLeft as (0, 0) ---> x
     //                   |
@@ -28,7 +18,7 @@ EntityBase {
 
     Image {
         anchors.fill: parent
-        source: fruitSource()
+        source: Fruits.fruitSource()
     }
 
     MouseArea {
@@ -103,22 +93,5 @@ EntityBase {
         fallDownAnimation.to = block.y + distance * block.height
 
         fallDownTimer.start()
-    }
-
-    function fruitSource() {
-        switch (type) {
-        case GameBlock.FruitType.Apple:
-            return "../assets/Apple.png"
-        case GameBlock.FruitType.Banana:
-            return "../assets/Banana.png"
-        case GameBlock.FruitType.BlueBerry:
-            return "../assets/BlueBerry.png"
-        case GameBlock.FruitType.Orange:
-            return "../assets/Orange.png"
-        case GameBlock.FruitType.Pear:
-            return "../assets/Pear.png"
-        default :
-            return ""
-        }
     }
 }

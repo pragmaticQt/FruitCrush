@@ -60,6 +60,7 @@ macx {
 }
 
 DISTFILES += \
+    qml/game/Fruits.qml \
     qml/game/GameArea.qml \
     qml/game/GameBlock.qml \
     qml/game/GameSound.qml \

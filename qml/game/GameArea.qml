@@ -61,7 +61,7 @@ Item {
             x: column * blockSize,
             y: row * blockSize,
 
-            type: Math.floor(Math.random() * GameBlock.FruitType.Total), // random type
+            type: Math.floor(Math.random() * Fruits.FruitType.Total), // random type
             row: row,
             column: column
         }

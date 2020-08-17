@@ -2,14 +2,12 @@ import QtQuick 2.0
 
 Item {
     id: highlightEffect
-    property alias anchors: highlightRect.anchors
 
     // rectangle for highlight effect
     Rectangle {
       id: highlightRect
+      anchors.fill: parent
       color: "white"
-//      anchors.fill: parent
-//      anchors.centerIn: parent
       opacity: 0
       z: 1
     }
