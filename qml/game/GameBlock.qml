@@ -32,16 +32,6 @@ EntityBase {
         from: 1.0
         to: 0.0
         running: false
-
-        onStarted: {
-            particleEffect.start()
-        }
-
-        onStopped: {
-            particleEffect.stop()
-
-            fadedout(block.entityId)
-        }
     }
 
     NumberAnimation on y {
@@ -53,10 +43,6 @@ EntityBase {
         interval: fadeOutAnimation.duration
         repeat: false
         running: false
-
-        onTriggered: {
-            fallDownAnimation.start()
-        }
     }
 
     // particle effect
@@ -69,6 +55,13 @@ EntityBase {
     HighlightEffect {
         id: highlightEffect
         anchors.fill: parent
+    }
+
+    Component.onCompleted: {
+        fadeOutAnimation.started.connect(particleEffect.start)
+        fadeOutAnimation.stopped.connect(particleEffect.stop)
+        fadeOutAnimation.stopped.connect(function() { fadedout(block.entityId)} )
+        fallDownTimer.triggered.connect(fallDownAnimation.start)
     }
 
     // highlights the block to help the player find groups
