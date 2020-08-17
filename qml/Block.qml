@@ -38,12 +38,18 @@ EntityBase {
 
     NumberAnimation on opacity {
         id: fadeOutAnimation
-        duration: 100
+        duration: 500
         from: 1.0
         to: 0.0
         running: false
 
+        onStarted: {
+            particleItem.opacity = 1
+            sparkleParticle.start()
+        }
+
         onStopped: {
+            sparkleParticle.stop()
             fadedout(block.entityId)
         }
     }
@@ -61,6 +67,23 @@ EntityBase {
         onTriggered: {
             fallDownAnimation.start()
         }
+    }
+
+    // particle effect
+    Item {
+      id: particleItem
+      width: parent.width
+      height: parent.height
+      x: parent.width/2
+      y: parent.height/2
+
+      Particle {
+        id: sparkleParticle
+        fileName: "./particles/FruitySparkle.json"
+      }
+      opacity: 0
+      visible: opacity > 0
+      enabled: opacity > 0
     }
 
     function fadeOut() {
