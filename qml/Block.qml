@@ -38,7 +38,7 @@ EntityBase {
 
     NumberAnimation on opacity {
         id: fadeOutAnimation
-        duration: 500
+        duration: 500 //increased for visibility
         from: 1.0
         to: 0.0
         running: false
