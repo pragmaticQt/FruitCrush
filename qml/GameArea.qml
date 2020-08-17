@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import Felgo 3.0
+import "./game"
 
 Item {
 
@@ -14,8 +15,13 @@ Item {
     readonly property int matches: 3 // least connected blocks to remove
 
     property var field: [] //holds blocks or entities
-
+    // The syntax for defining a new signal is:
+    //    signal <name>[([<type> <parameter name>[, ...]])]
     signal gameOver()
+
+    GameSound {
+        id: gameSound
+    }
 
     // turn (row, column) to index in array field
     function index(row, column) {
@@ -119,6 +125,8 @@ Item {
 
         if(!isFieldReadyForNewBlockRemoval())
           return
+
+        gameSound.playMoveBlock()
 
         // copy current field, allows us to change the array without modifying the real game field
         // this simplifies the algorithms to search for connected blocks and their removal

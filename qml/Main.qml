@@ -14,7 +14,9 @@ GameWindow {
     screenWidth: 640
     screenHeight: 960
 
-    onSplashScreenFinished: gameScene.startGame()
+    onSplashScreenFinished: {
+        backgroundMusic.play()
+    }
 
     EntityManager {
         id: entityManager
@@ -24,6 +26,13 @@ GameWindow {
     FontLoader {
         id: gameFont
         source: "../assets/fonts/akaDylanPlain.ttf"
+    }
+
+    BackgroundMusic {
+      id: backgroundMusic
+      source: "../assets/snd/backgroundMusic.mp3"
+      // autoPlay: true - this is set by default
+      autoPlay: false
     }
 
     Scene {
@@ -55,7 +64,7 @@ GameWindow {
             id: gameOverWindow
             y: 90
             z: 10
-            opacity: 0
+            opacity: 1
             anchors.horizontalCenter: parent.horizontalCenter
             onNewGameClicked: gameScene.startGame()
         }
