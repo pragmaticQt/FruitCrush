@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.12
 
 QtObject {
     enum FruitType {
@@ -11,20 +11,21 @@ QtObject {
         Total
     }
 
-    function fruitSource() {
+    function fruitSource(type) {
         switch (type) {
-        case GameBlock.FruitType.Apple:
-            return "../assets/Apple.png"
-        case GameBlock.FruitType.Banana:
-            return "../assets/Banana.png"
-        case GameBlock.FruitType.BlueBerry:
-            return "../assets/BlueBerry.png"
-        case GameBlock.FruitType.Orange:
-            return "../assets/Orange.png"
-        case GameBlock.FruitType.Pear:
-            return "../assets/Pear.png"
+        case Fruits.FruitType.Apple:
+            return "../../assets/Apple.png"
+        case Fruits.FruitType.Banana:
+            return "../../assets/Banana.png"
+        case Fruits.FruitType.BlueBerry:
+            return "../../assets/BlueBerry.png"
+        case Fruits.FruitType.Orange:
+            return "../../assets/Orange.png"
+        case Fruits.FruitType.Pear:
+            return "../../assets/Pear.png"
         default :
             return ""
         }
     }
+
 }

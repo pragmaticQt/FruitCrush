@@ -18,7 +18,7 @@ Item {
     signal newGameClicked()
 
     Image {
-        source: "../assets/GameOver.png"
+        source: "../../assets/GameOver.png"
         anchors.fill: parent
     }
 

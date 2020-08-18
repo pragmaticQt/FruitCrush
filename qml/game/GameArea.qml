@@ -5,12 +5,12 @@ Item {
 
     id: gameArea
 
-    width: blockSize * 8
-    height: blockSize * 12
+    width: blockSize * columns
+    height: blockSize * rows
 
     property double blockSize
-    property int rows: Math.floor(height / blockSize)
-    property int columns: Math.floor(width / blockSize)
+    property int rows: 12
+    property int columns: 8
     readonly property int matches: 3 // least connected blocks to remove
 
     property var field: [] //holds blocks or entities

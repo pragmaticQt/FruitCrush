@@ -16,9 +16,13 @@ EntityBase {
     signal clicked(int row, int column, int type)
     signal fadedout(string entityId)
 
+    Fruits {
+        id: fruit
+    }
+
     Image {
         anchors.fill: parent
-        source: Fruits.fruitSource()
+        source: fruit.fruitSource(type)
     }
 
     MouseArea {
@@ -28,7 +32,7 @@ EntityBase {
 
     NumberAnimation on opacity {
         id: fadeOutAnimation
-        duration: 500 //increased for visibility
+        duration: 200 //increased for visibility
         from: 1.0
         to: 0.0
         running: false
@@ -85,6 +89,6 @@ EntityBase {
         fallDownAnimation.duration = 100 * distance
         fallDownAnimation.to = block.y + distance * block.height
 
-        fallDownTimer.start()
+        fallDownTimer.restart()
     }
 }
