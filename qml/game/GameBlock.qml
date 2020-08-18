@@ -13,8 +13,15 @@ EntityBase {
     property int row  // position in gamearea grid,
     property int column
 
+    property int previousRow
+    property int previousColumn
+
     signal clicked(int row, int column, int type)
     signal fadedout(string entityId)
+
+    // emit a signal when block should be swapped with another
+    signal swapBlock(int row, int column, int targetRow, int targetColumn)
+    signal swapFinished(int row, int column, int swapRow, int swapColumn)
 
     Fruits {
         id: fruit
@@ -26,8 +33,62 @@ EntityBase {
     }
 
     MouseArea {
+        id: mouse
         anchors.fill: parent
-        onClicked: block.clicked(row, column, type)
+
+        // properties to handle dragging
+        property bool dragging
+        property bool waitForRelease
+        property var dragStart
+
+        // start drag on press
+        onPressed: {
+
+          if(!dragging && !waitForRelease) {
+            dragging = true
+            dragStart = { x: mouse.x, y: mouse.y }
+          }
+        }
+        // stop drag on release
+        onReleased: {
+
+          dragging = false
+          waitForRelease = false
+        }
+        // trigger swap of blocks after player swiped a certain distance
+        onPositionChanged: {
+
+          if(!dragging || waitForRelease)
+            return
+
+          var xDistance = mouse.x - dragStart.x
+          var yDistance = mouse.y - dragStart.y
+
+          if((Math.abs(xDistance) < block.width/2)
+              && (Math.abs(yDistance) < block.height/2))
+            return
+
+          var targetRow = block.row
+          var targetCol = block.column
+
+          if(Math.abs(xDistance) > Math.abs(yDistance)) {
+            if(xDistance > 0)
+              targetCol++
+            else
+              targetCol--
+          }
+          else {
+            if(yDistance > 0)
+              targetRow++
+            else
+              targetRow--
+          }
+
+          // signal block move
+          //dragging = false
+          waitForRelease = true
+          block.swapBlock(row, column, targetRow, targetCol)
+        }
     }
 
     NumberAnimation on opacity {
@@ -42,11 +103,31 @@ EntityBase {
         running: false
     }
 
-    Timer {// one shot timer for delaying fallDownAnimation
+    // one shot timer for delaying fallDownAnimation
+    Timer {
         id: fallDownTimer
         interval: fadeOutAnimation.duration
         repeat: false
         running: false
+    }
+
+    // timer to wait a bit before signal swap finished
+    Timer {
+      id: signalSwapFinished
+      interval: 50
+      repeat: false
+      running: false
+      onTriggered: swapFinished(block.previousRow, block.previousColumn, block.row, block.column)
+    }
+
+    // animation to move a block after swipe
+    NumberAnimation {
+      id: swapAnimation
+      target: block
+      duration: 150
+      onStopped: {
+        signalSwapFinished.start() // trigger swapFinished
+      }
     }
 
     // particle effect
@@ -65,6 +146,31 @@ EntityBase {
         fadeOutAnimation.stopped.connect(particleEffect.stop)
         fadeOutAnimation.stopped.connect(function() { fadedout(block.entityId)} )
         fallDownTimer.triggered.connect(fallDownAnimation.start)
+    }
+
+    // function to move block one step left/right/up or down
+    function swap(targetRow, targetCol) {
+      swapAnimation.complete()
+
+      block.previousRow = block.row
+      block.previousColumn = block.column
+
+      if(targetRow !== block.row) {
+        swapAnimation.property = "y"
+        swapAnimation.to = block.y +
+            (targetRow > block.row ? block.height : -block.height)
+        block.row = targetRow
+      }
+      else if(targetCol !== block.column) {
+        swapAnimation.property = "x"
+        swapAnimation.to = block.x +
+            (targetCol > block.column ? block.width : -block.width)
+        block.column = targetCol
+      }
+      else
+        return
+
+      swapAnimation.start()
     }
 
     // highlights the block to help the player find groups
