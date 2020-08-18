@@ -139,7 +139,7 @@ Item {
         var blockCount = getNumberOfConnectedBlocks(fieldCopy, row, column, type)
         if(blockCount >= matches) {
             removeConnectedBlocks(fieldCopy)
-            moveBlocksToBottom()
+            refill()
 
             // calculate and increase score
             // this will increase the added score for each block, e.g. four blocks will be 1+2+3+4 = 10 points
@@ -156,47 +156,64 @@ Item {
         entityManager.removeEntityById(entityId)
     }
 
-    // move remaining blocks to the bottom and fill up columns with new blocks
-    function moveBlocksToBottom() {
-        // check all columns for empty fields
+    function findLastNull(col, last) {
+        // start at the bottom of the field
+        for(var row = last; row >= 0; row--) {
+            // find empty spot in grid
+            if(gameArea.field[index(row, col)] === null) {
+                return row
+            }
+        }
+        return -1
+    }
+
+    function findLastNonNull(col, last) {
+        // start at the bottom of the field
+        for(var row = last; row >= 0; row--) {
+            // find empty spot in grid
+            if(gameArea.field[index(row, col)] !== null) {
+                return row
+            }
+        }
+        return -1
+    }
+
+    // fill game area by pushing existing blocks towards bottom and fill blank
+    function refill() {
+        // left to right
         for(var col = 0; col < columns; col++) {
-            // start at the bottom of the field
-            for(var row = rows - 1; row >= 0; row--) {
-                // find empty spot in grid
-                if(gameArea.field[index(row, col)] === null) {
 
-                    // find block to move down
-                    var moveBlock = null
+            var lastNullRow = findLastNull(col, rows - 1)
+            if (lastNullRow !== -1) {
+                // try pack existing blocks and leave holes at top
+                var movedRow = findLastNonNull(col, lastNullRow-1)
+                while (movedRow !== -1) {
+                    // swap the two
+                    let moveBlock = gameArea.field[index(movedRow,col)]
+                    gameArea.field[index(movedRow,col)] = null
+                    gameArea.field[index(lastNullRow, col)] = moveBlock
+                    moveBlock.row = lastNullRow // its new destination
+                    // fall down the moved block
+                    let distance = lastNullRow - movedRow
+                    moveBlock.fallDown(distance)
 
-                    for(var moveRow = row - 1; moveRow >= 0; moveRow--) {
-                        moveBlock = gameArea.field[index(moveRow,col)]
+                    // update for new iteration
+                    lastNullRow--
+                    movedRow--
+                    movedRow = findLastNonNull(col, movedRow)
 
-                        if(moveBlock !== null) {
-                            gameArea.field[index(moveRow,col)] = null
-                            gameArea.field[index(row, col)] = moveBlock
-                            moveBlock.row = row
-                            moveBlock.fallDown(row - moveRow)
-                            break
-                        }
-                    }
-
-                    // if no block found, fill whole column up with new blocks
-                    if(moveBlock === null) {
-                        var distance = row + 1
-                        for(var newRow = row; newRow >= 0; newRow--) {
-                            var newBlock = createRandomBlock(newRow - distance, col)
-                            gameArea.field[index(newRow, col)] = newBlock
-                            newBlock.row = newRow
-                            newBlock.fallDown(distance)
-                        }
-
-                        // column already filled up, no need to check higher rows again
-                        break
-                    }
                 }
 
-            } // end check rows starting from the bottom
-        } // end check columns for empty fields
+                // fill holes at top
+                var distance = lastNullRow + 1
+                for(var newRow = lastNullRow; newRow >= 0; newRow--) {
+                    var newBlock = createRandomBlock(newRow - distance, col)
+                    gameArea.field[index(newRow, col)] = newBlock
+                    newBlock.row = newRow
+                    newBlock.fallDown(distance)
+                }
+            }
+        }
     }
 
     // recursively check a block and its neighbors
