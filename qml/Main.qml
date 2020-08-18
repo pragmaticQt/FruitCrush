@@ -79,6 +79,7 @@ GameWindow {
             y: 20
 
             onGameOver: gameOverWindow.show()
+            onNewScore: gameScene.score += score
         }
 
         function startGame() {

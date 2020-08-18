@@ -16,6 +16,7 @@ Item {
     property var field: [] //holds blocks or entities
 
     signal gameOver()
+    signal newScore(int score)
 
     GameSound {
         id: gameSound
@@ -140,14 +141,14 @@ Item {
             removeConnectedBlocks(fieldCopy)
             moveBlocksToBottom()
 
-            // emit signal if game is over
-            if(isGameOver())
-              gameOver()
-
             // calculate and increase score
             // this will increase the added score for each block, e.g. four blocks will be 1+2+3+4 = 10 points
             var score = blockCount * (blockCount + 1) / 2
-            gameScene.score += score
+            newScore(score)
+
+            // emit signal if game is over
+            if(isGameOver())
+              gameOver()
         }
     }
 
