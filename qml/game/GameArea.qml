@@ -14,8 +14,7 @@ Item {
     readonly property int matches: 3 // least connected blocks to remove
     property var entityManager
     property var field: [] //holds blocks or entities
-    // The syntax for defining a new signal is:
-    //    signal <name>[([<type> <parameter name>[, ...]])]
+
     signal gameOver()
 
     GameSound {
@@ -34,7 +33,7 @@ Item {
 
         for (var i = 0; i < rows; i++) {
             for (var j = 0; j < columns; j++) {
-                gameArea.field.push(createBlock(i, j))
+                gameArea.field.push(createRandomBlock(i, j))
             }
         }
     }
@@ -52,8 +51,12 @@ Item {
     }
 
     // create a new block and let entityManager own it
+    function createRandomBlock(row, column){
+        return createBlock(row, column, Math.floor(Math.random() * Fruits.FruitType.Total))
+    }
+
     // return ref to the new block
-    function createBlock(row, column) {
+    function createBlock(row, column, type) {
         // configure block
         var entityProperties = {
             width: blockSize,
@@ -61,7 +64,7 @@ Item {
             x: column * blockSize,
             y: row * blockSize,
 
-            type: Math.floor(Math.random() * Fruits.FruitType.Total), // random type
+            type: type, // random type
             row: row,
             column: column
         }
@@ -180,7 +183,7 @@ Item {
                     if(moveBlock === null) {
                         var distance = row + 1
                         for(var newRow = row; newRow >= 0; newRow--) {
-                            var newBlock = createBlock(newRow - distance, col)
+                            var newBlock = createRandomBlock(newRow - distance, col)
                             gameArea.field[index(newRow, col)] = newBlock
                             newBlock.row = newRow
                             newBlock.fallDown(distance)
