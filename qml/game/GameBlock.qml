@@ -33,13 +33,13 @@ EntityBase {
     NumberAnimation on opacity {
         id: fadeOutAnimation
         duration: 200 //increased for visibility
-        from: 1.0
-        to: 0.0
+
         running: false
     }
 
     NumberAnimation on y {
         id: fallDownAnimation
+        running: false
     }
 
     Timer {// one shot timer for delaying fallDownAnimation
@@ -52,8 +52,7 @@ EntityBase {
     // particle effect
     ParticleEffect {
         id: particleEffect
-        anchors.fill: parent
-        fileName: "./particles/FruitySparkle.json"
+        anchors.centerIn: parent
     }
 
     HighlightEffect {
@@ -79,6 +78,8 @@ EntityBase {
     }
 
     function fadeOut() {
+        fadeOutAnimation.from = 1.0
+        fadeOutAnimation.to = 0.0
         fadeOutAnimation.start()
     }
 

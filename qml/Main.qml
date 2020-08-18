@@ -20,11 +20,6 @@ GameWindow {
         backgroundMusic.play()
     }
 
-    EntityManager {
-        id: entityManager
-        entityContainer: gameArea
-    }
-
     FontLoader {
         id: gameFont
         source: "../assets/fonts/akaDylanPlain.ttf"
@@ -71,8 +66,14 @@ GameWindow {
             onNewGameClicked: gameScene.startGame()
         }
 
+        EntityManager {
+            id: entityManager
+            entityContainer: gameArea
+        }
+
         GameArea {
             id: gameArea
+            entityManager: entityManager
             anchors.horizontalCenter: gameScene.horizontalCenter
             blockSize: 30
             y: 20

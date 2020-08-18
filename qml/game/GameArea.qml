@@ -12,7 +12,7 @@ Item {
     property int rows: 12
     property int columns: 8
     readonly property int matches: 3 // least connected blocks to remove
-
+    property var entityManager
     property var field: [] //holds blocks or entities
     // The syntax for defining a new signal is:
     //    signal <name>[([<type> <parameter name>[, ...]])]
@@ -34,7 +34,7 @@ Item {
 
         for (var i = 0; i < rows; i++) {
             for (var j = 0; j < columns; j++) {
-                gameArea.field[index(i, j)] = createBlock(i, j)
+                gameArea.field.push(createBlock(i, j))
             }
         }
     }

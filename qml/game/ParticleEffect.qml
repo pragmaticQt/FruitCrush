@@ -8,7 +8,7 @@ Item {
 
     Particle {
         id: sparkleParticle
-        fileName: "./particles/FruitySparkle.json"
+        fileName: "../particles/FruitySparkle.json"
     }
     opacity: 0
     visible: opacity > 0
