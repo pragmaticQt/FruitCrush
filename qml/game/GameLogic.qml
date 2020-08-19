@@ -8,4 +8,6 @@ QtObject {
     // Area to GameScene
     signal gameOver()
     signal newScore(int score)
+
+    signal startGame()
 }

@@ -9,7 +9,7 @@ Item {
     property var entityManager
 
     // create random blocks
-    //NOTE: all created blocks owned by entiryManger
+    //NOTE: all created blocks owned by entityManager
     function initialize() {
         _.clearField()
 
@@ -21,61 +21,26 @@ Item {
         _.fieldLocked = false
         _.playerMoveInProgress = false
     }
-    // swap finished -> check field for possible block removals
-    function handleSwapFinished(row, column, swapRow, swapColumn) {
-        if(!_.playerMoveInProgress) {
-            _.playerMoveInProgress = true
-
-            if(!_.startRemovalOfBlocks(row, column) && !_.startRemovalOfBlocks(swapRow, swapColumn)) {
-                // swap is not possible, no blocks can be removed
-                gameSound.playMoveBlockBack()
-                _.swapBlocks(row, column, swapRow, swapColumn)
-            }
-            else {
-                // increase difficulty every 10 clicks until maxTypes == 5
-                //          gameArea.clicks++
-                //          if((gameArea.maxTypes < 8) && (gameArea.clicks % 10 == 0))
-                //            gameArea.maxTypes++
-
-                _.playerMoveInProgress = false
-            }
-        }
-        else {
-            // nothing could be removed and blocks got swapped back
-            _.playerMoveInProgress = false
-            _.fieldLocked = false
-        }
-    }
 
     Connections {
         id: _gameLogic
 
         onFadedout: {
-            handleFadeout(entityId)
-        }
-
-        onSwapBlock: {
-            handleSwap(row, column, targetRow, targetColumn)
-        }
-
-
-        function handleFadeout(entityId) {
             entityManager.removeEntityById(entityId)
         }
 
-        // handle swaps of two neighbour blocks
-        function handleSwap(row, column, targetRow, targetColumn) {
+        onSwapBlock: {
             if(_.fieldLocked || _.gameEnded)
                 return
 
             // swap blocks
             if(targetRow >= 0 && targetRow < _.rows && targetColumn >= 0 && targetColumn < _.columns) {
                 _.fieldLocked = true
-                gameSound.playMoveBlock()
+                _gameSound.playMoveBlock()
                 _.swapBlocks(row, column, targetRow, targetColumn)
             }
             else {
-                gameSound.playMoveBlockBack()
+                _gameSound.playMoveBlockBack()
             }
         }
     }
@@ -133,11 +98,6 @@ Item {
 
             // link click signal from block to handler function
             var entity = entityManager.getEntityById(id)
-            //entity.swapBlock.disconnect(handleSwap) // remove first as pooled block might already be connected
-            //entity.swapBlock.connect(handleSwap)
-            //entity.fadedout.disconnect(handleFadeout)
-            //entity.fadedout.connect(handleFadeout)
-
             return entity
         }
 
@@ -234,6 +194,31 @@ Item {
 
         }
 
+        // swap finished -> check field for possible block removals
+        function handleSwapFinished(row, column, swapRow, swapColumn) {
+            if(!playerMoveInProgress) {
+                playerMoveInProgress = true
+
+                if(!startRemovalOfBlocks(row, column) && !startRemovalOfBlocks(swapRow, swapColumn)) {
+                    // swap is not possible, no blocks can be removed
+                    _gameSound.playMoveBlockBack()
+                    swapBlocks(row, column, swapRow, swapColumn)
+                }
+                else {
+                    // increase difficulty every 10 clicks until maxTypes == 5
+                    //          gameArea.clicks++
+                    //          if((gameArea.maxTypes < 8) && (gameArea.clicks % 10 == 0))
+                    //            gameArea.maxTypes++
+
+                    playerMoveInProgress = false
+                }
+            }
+            else {
+                // nothing could be removed and blocks got swapped back
+                playerMoveInProgress = false
+                fieldLocked = false
+            }
+        }
 
         // swaps positions of two blocks on field
         function swapBlocks(row, column, row2, column2) {
@@ -289,28 +274,7 @@ Item {
 
         // Predicts
         function isGameOver() {
-
-            // copy field to search for connected blocks without modifying the actual field
-            var fieldCopy = field.slice()
-
-            // search for connected blocks in field
-            for(var row = 0; row < rows; row++) {
-                for(var col = 0; col < columns; col++) {
-
-                    // test all blocks
-                    var block = fieldCopy[index(row, col)]
-                    if(block !== null) {
-                        var blockCount = getNumberOfConnectedBlocks(fieldCopy, row, col, block.type)
-
-                        if(blockCount >= matches) {
-                            return false
-                        }
-                    }
-
-                }
-            }
-
-            return true
+            return false
         }
 
         // returns true if all animations are finished and new blocks may be removed
@@ -396,12 +360,13 @@ Item {
     }
 
     GameSound {
-        id: gameSound
+        id: _gameSound
     }
 
 
     width: blockSize * _.columns
     height: blockSize * _.rows
-
+    // clip fuits outside of gameArea
+    clip: true
 
 }

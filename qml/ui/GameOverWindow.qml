@@ -2,8 +2,20 @@ import QtQuick 2.0
 import Felgo 3.0
 
 Item {
-
     id: gameOverWindow
+
+    // signal when new game button is clicked
+    signal newGameClicked()
+
+    // shows the window
+    function show() {
+        gameOverWindow.opacity = 1
+    }
+
+    // hides the window
+    function hide() {
+        gameOverWindow.opacity = 0
+    }
 
     width: 232
     height: 160
@@ -13,9 +25,6 @@ Item {
 
     // disable when opacity < 1
     enabled: opacity == 1
-
-    // signal when new game button is clicked
-    signal newGameClicked()
 
     Image {
         source: "../../assets/GameOver.png"
@@ -73,13 +82,4 @@ Item {
       NumberAnimation { duration: 400 }
     }
 
-    // shows the window
-    function show() {
-        gameOverWindow.opacity = 1
-    }
-
-    // hides the window
-    function hide() {
-        gameOverWindow.opacity = 0
-    }
 }

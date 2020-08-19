@@ -51,6 +51,13 @@ GameWindow {
             onNewScore: {
                 gameScene.score += score
             }
+
+            onStartGame: {
+                gameArea.initialize()
+                gameScene.score = 0
+
+                gameOverWindow.hide()
+            }
         }
 
         BackgroundImage {
@@ -75,7 +82,8 @@ GameWindow {
             z: 10
             opacity: 1
             anchors.horizontalCenter: parent.horizontalCenter
-            onNewGameClicked: gameScene.startGame()
+
+            onNewGameClicked: gameLogic.startGame()
         }
 
         EntityManager {
@@ -94,13 +102,6 @@ GameWindow {
 
         GameLogic {
             id: gameLogic
-        }
-
-        function startGame() {
-            gameArea.initialize()
-            gameScene.score = 0
-
-            gameOverWindow.hide()
         }
     }
 }
