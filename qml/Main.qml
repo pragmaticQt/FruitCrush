@@ -74,12 +74,17 @@ GameWindow {
         GameArea {
             id: gameArea
             entityManager: entityManager
+            dispatcher: gameLogic
             anchors.horizontalCenter: gameScene.horizontalCenter
             blockSize: 30
             y: 20
 
             onGameOver: gameOverWindow.show()
             onNewScore: gameScene.score += score
+        }
+
+        GameLogic {
+            id: gameLogic
         }
 
         function startGame() {

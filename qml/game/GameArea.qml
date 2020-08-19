@@ -4,6 +4,7 @@ import Felgo 3.0
 Item {
     id: gameArea
 
+    property alias dispatcher: gameLogic.target
     property double blockSize
     property var entityManager
 
@@ -23,27 +24,6 @@ Item {
         _.fieldLocked = false
         _.playerMoveInProgress = false
     }
-
-    function handleFadeout(entityId) {
-        entityManager.removeEntityById(entityId)
-    }
-
-    // handle swaps of two neighbour blocks
-    function handleSwap(row, column, targetRow, targetColumn) {
-        if(_.fieldLocked || _.gameEnded)
-            return
-
-        // swap blocks
-        if(targetRow >= 0 && targetRow < _.rows && targetColumn >= 0 && targetColumn < _.columns) {
-            _.fieldLocked = true
-            gameSound.playMoveBlock()
-            _.swapBlocks(row, column, targetRow, targetColumn)
-        }
-        else {
-            gameSound.playMoveBlockBack()
-        }
-    }
-
     // swap finished -> check field for possible block removals
     function handleSwapFinished(row, column, swapRow, swapColumn) {
         if(!_.playerMoveInProgress) {
@@ -67,6 +47,39 @@ Item {
             // nothing could be removed and blocks got swapped back
             _.playerMoveInProgress = false
             _.fieldLocked = false
+        }
+    }
+
+    Connections {
+        id: gameLogic
+
+        onFadedout: {
+            handleFadeout(entityId)
+        }
+
+        onSwapBlock: {
+            handleSwap(row, column, targetRow, targetColumn)
+        }
+
+
+        function handleFadeout(entityId) {
+            entityManager.removeEntityById(entityId)
+        }
+
+        // handle swaps of two neighbour blocks
+        function handleSwap(row, column, targetRow, targetColumn) {
+            if(_.fieldLocked || _.gameEnded)
+                return
+
+            // swap blocks
+            if(targetRow >= 0 && targetRow < _.rows && targetColumn >= 0 && targetColumn < _.columns) {
+                _.fieldLocked = true
+                gameSound.playMoveBlock()
+                _.swapBlocks(row, column, targetRow, targetColumn)
+            }
+            else {
+                gameSound.playMoveBlockBack()
+            }
         }
     }
 
@@ -124,9 +137,9 @@ Item {
             // link click signal from block to handler function
             var entity = entityManager.getEntityById(id)
             //entity.swapBlock.disconnect(handleSwap) // remove first as pooled block might already be connected
-            entity.swapBlock.connect(handleSwap)
+            //entity.swapBlock.connect(handleSwap)
             //entity.fadedout.disconnect(handleFadeout)
-            entity.fadedout.connect(handleFadeout)
+            //entity.fadedout.connect(handleFadeout)
 
             return entity
         }
@@ -237,8 +250,8 @@ Item {
             // react after second swap animation has finished
             block2.swapFinished.connect(handleSwapFinished)
 
-            block.swap(row2, column2)
-            block2.swap(row, column)
+            block.moveTo(row2, column2)
+            block2.moveTo(row, column)
 
             field[index(row, column)] = block2
             field[index(row2, column2)] = block

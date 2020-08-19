@@ -14,13 +14,13 @@ EntityBase {
 
     signal clicked(int row, int column, int type)
 
-    signal fadedout(string entityId)
+    //signal fadedout(string entityId)
     // emit a signal when block should be swapped with another
-    signal swapBlock(int row, int column, int targetRow, int targetColumn)
+    //signal swapBlock(int row, int column, int targetRow, int targetColumn)
     signal swapFinished(int row, int column, int swapRow, int swapColumn)
 
     // function to move block one step left/right/up or down
-    function swap(targetRow, targetCol) {
+    function moveTo(targetRow, targetCol) {
       swapAnimation.complete()
 
       _.previousRow = block.row
@@ -76,7 +76,7 @@ EntityBase {
     Component.onCompleted: {
         fadeOutAnimation.started.connect(particleEffect.start)
         fadeOutAnimation.stopped.connect(particleEffect.stop)
-        fadeOutAnimation.stopped.connect(function() { fadedout(block.entityId)} )
+        fadeOutAnimation.stopped.connect(function() { gameLogic.fadedout(block.entityId)} )
         swapAnimation.stopped.connect(swapFinishedTimer.start)
 
         fallDownTimer.triggered.connect(fallDownAnimation.start)
@@ -154,7 +154,7 @@ EntityBase {
           // signal block move
           //dragging = false
           waitForRelease = true
-          block.swapBlock(row, column, targetRow, targetCol)
+          gameLogic.swapBlock(row, column, targetRow, targetCol)
         }
     }
 
