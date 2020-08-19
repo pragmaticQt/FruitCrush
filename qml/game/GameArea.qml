@@ -6,10 +6,8 @@ Item {
 
     property alias dispatcher: _gameLogic.target
     property double blockSize
-    property var entityManager
 
     // create random blocks
-    //NOTE: all created blocks owned by entityManager
     function initialize() {
         _.clearField()
 
@@ -20,6 +18,11 @@ Item {
         }
         _.fieldLocked = false
         _.playerMoveInProgress = false
+    }
+    //NOTE: all created blocks owned by entityManager
+    EntityManager {
+        id: entityManager
+        entityContainer: gameArea
     }
 
     Connections {

@@ -86,14 +86,9 @@ GameWindow {
             onNewGameClicked: gameLogic.startGame()
         }
 
-        EntityManager {
-            id: entityManager
-            entityContainer: gameArea
-        }
-
         GameArea {
             id: gameArea
-            entityManager: entityManager
+            //entityManager: entityManager
             dispatcher: gameLogic
             anchors.horizontalCenter: gameScene.horizontalCenter
             blockSize: 30
