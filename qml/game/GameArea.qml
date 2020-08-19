@@ -4,12 +4,9 @@ import Felgo 3.0
 Item {
     id: gameArea
 
-    property alias dispatcher: gameLogic.target
+    property alias dispatcher: _gameLogic.target
     property double blockSize
     property var entityManager
-
-    signal gameOver()
-    signal newScore(int score)
 
     // create random blocks
     //NOTE: all created blocks owned by entiryManger
@@ -51,7 +48,7 @@ Item {
     }
 
     Connections {
-        id: gameLogic
+        id: _gameLogic
 
         onFadedout: {
             handleFadeout(entityId)
@@ -279,11 +276,11 @@ Item {
                 // calculate and increase score
                 // this will increase the added score for each block, e.g. four blocks will be 1+2+3+4 = 10 points
                 var score = blockCount * (blockCount + 1) / 2
-                newScore(score)
+                gameLogic.newScore(score)
 
                 // emit signal if game is over
                 if(isGameOver())
-                    gameOver()
+                    gameLogic.gameOver()
                 return true
             }
             else

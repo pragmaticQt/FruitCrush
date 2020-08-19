@@ -41,6 +41,18 @@ GameWindow {
 
         property int score: 0
 
+        Connections {
+            target: gameLogic
+
+            onGameOver: {
+                gameOverWindow.show()
+            }
+
+            onNewScore: {
+                gameScene.score += score
+            }
+        }
+
         BackgroundImage {
             id: bkgImage
             source: "../assets/JuicyBackground.png"
@@ -78,9 +90,6 @@ GameWindow {
             anchors.horizontalCenter: gameScene.horizontalCenter
             blockSize: 30
             y: 20
-
-            onGameOver: gameOverWindow.show()
-            onNewScore: gameScene.score += score
         }
 
         GameLogic {
