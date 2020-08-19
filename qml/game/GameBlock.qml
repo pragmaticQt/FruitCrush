@@ -1,27 +1,94 @@
 import QtQuick 2.0
 import Felgo 3.0
 
+// TopLeft as (0, 0) ---> x
+//                   |
+//                   Vy
+
 EntityBase {
     id: block
-    entityType: "block"
-    visible: y >= 0
 
     property int type // FruitType
-    // TopLeft as (0, 0) ---> x
-    //                   |
-    //                   Vy
     property int row  // position in gamearea grid,
     property int column
 
-    property int previousRow
-    property int previousColumn
-
     signal clicked(int row, int column, int type)
-    signal fadedout(string entityId)
 
+    signal fadedout(string entityId)
     // emit a signal when block should be swapped with another
     signal swapBlock(int row, int column, int targetRow, int targetColumn)
     signal swapFinished(int row, int column, int swapRow, int swapColumn)
+
+    // function to move block one step left/right/up or down
+    function swap(targetRow, targetCol) {
+      swapAnimation.complete()
+
+      _.previousRow = block.row
+      _.previousColumn = block.column
+
+      if(targetRow !== block.row) {
+        swapAnimation.property = "y"
+        swapAnimation.to = block.y +
+            (targetRow > block.row ? block.height : -block.height)
+        block.row = targetRow
+      }
+      else if(targetCol !== block.column) {
+        swapAnimation.property = "x"
+        swapAnimation.to = block.x +
+            (targetCol > block.column ? block.width : -block.width)
+        block.column = targetCol
+      }
+      else
+        return
+
+      swapAnimation.start()
+    }
+
+    // highlights the block to help the player find groups
+    function highlight(active) {
+        if(active) {
+            highlightEffect.activate()
+        }
+        else {
+            highlightEffect.deactivate()
+        }
+    }
+
+    function fadeOut() {
+        fadeOutAnimation.from = 1.0
+        fadeOutAnimation.to = 0.0
+        fadeOutAnimation.start()
+    }
+
+    function fallDown(distance) {
+        //Unlike stop(), complete() immediately fast-forwards the animation to its end.
+        fallDownAnimation.complete()
+
+        fallDownAnimation.duration = 100 * distance
+        fallDownAnimation.to = block.y + distance * block.height
+
+        fallDownTimer.restart()
+    }
+
+    entityType: "block"
+    visible: y >= 0
+
+    Component.onCompleted: {
+        fadeOutAnimation.started.connect(particleEffect.start)
+        fadeOutAnimation.stopped.connect(particleEffect.stop)
+        fadeOutAnimation.stopped.connect(function() { fadedout(block.entityId)} )
+        swapAnimation.stopped.connect(swapFinishedTimer.start)
+
+        fallDownTimer.triggered.connect(fallDownAnimation.start)
+        swapFinishedTimer.triggered.connect(function(){ swapFinished(_.previousRow, _.previousColumn, block.row, block.column)})
+    }
+
+    QtObject {
+        id: _
+
+        property int previousRow
+        property int previousColumn
+    }
 
     Fruits {
         id: fruit
@@ -113,11 +180,10 @@ EntityBase {
 
     // timer to wait a bit before signal swap finished
     Timer {
-      id: signalSwapFinished
+      id: swapFinishedTimer
       interval: 50
       repeat: false
       running: false
-      onTriggered: swapFinished(block.previousRow, block.previousColumn, block.row, block.column)
     }
 
     // animation to move a block after swipe
@@ -125,9 +191,6 @@ EntityBase {
       id: swapAnimation
       target: block
       duration: 150
-      onStopped: {
-        signalSwapFinished.start() // trigger swapFinished
-      }
     }
 
     // particle effect
@@ -139,63 +202,5 @@ EntityBase {
     HighlightEffect {
         id: highlightEffect
         anchors.fill: parent
-    }
-
-    Component.onCompleted: {
-        fadeOutAnimation.started.connect(particleEffect.start)
-        fadeOutAnimation.stopped.connect(particleEffect.stop)
-        fadeOutAnimation.stopped.connect(function() { fadedout(block.entityId)} )
-        fallDownTimer.triggered.connect(fallDownAnimation.start)
-    }
-
-    // function to move block one step left/right/up or down
-    function swap(targetRow, targetCol) {
-      swapAnimation.complete()
-
-      block.previousRow = block.row
-      block.previousColumn = block.column
-
-      if(targetRow !== block.row) {
-        swapAnimation.property = "y"
-        swapAnimation.to = block.y +
-            (targetRow > block.row ? block.height : -block.height)
-        block.row = targetRow
-      }
-      else if(targetCol !== block.column) {
-        swapAnimation.property = "x"
-        swapAnimation.to = block.x +
-            (targetCol > block.column ? block.width : -block.width)
-        block.column = targetCol
-      }
-      else
-        return
-
-      swapAnimation.start()
-    }
-
-    // highlights the block to help the player find groups
-    function highlight(active) {
-        if(active) {
-            highlightEffect.activate()
-        }
-        else {
-            highlightEffect.deactivate()
-        }
-    }
-
-    function fadeOut() {
-        fadeOutAnimation.from = 1.0
-        fadeOutAnimation.to = 0.0
-        fadeOutAnimation.start()
-    }
-
-    function fallDown(distance) {
-        //Unlike stop(), complete() immediately fast-forwards the animation to its end.
-        fallDownAnimation.complete()
-
-        fallDownAnimation.duration = 100 * distance
-        fallDownAnimation.to = block.y + distance * block.height
-
-        fallDownTimer.restart()
     }
 }

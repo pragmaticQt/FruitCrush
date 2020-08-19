@@ -83,7 +83,7 @@ GameWindow {
         }
 
         function startGame() {
-            gameArea.initializeField()
+            gameArea.initialize()
             gameScene.score = 0
 
             gameOverWindow.hide()
