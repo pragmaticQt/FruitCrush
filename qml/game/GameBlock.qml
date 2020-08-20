@@ -18,6 +18,7 @@ EntityBase {
     // emit a signal when block should be swapped with another
     //signal swapBlock(int row, int column, int targetRow, int targetColumn)
     signal swapFinished(int row, int column, int swapRow, int swapColumn)
+    signal falldownFinished()
 
     // function to move block one step left/right/up or down
     function moveTo(targetRow, targetCol) {
@@ -45,14 +46,14 @@ EntityBase {
     }
 
     // highlights the block to help the player find groups
-    function highlight(active) {
-        if(active) {
-            highlightEffect.activate()
-        }
-        else {
-            highlightEffect.deactivate()
-        }
-    }
+//    function highlight(active) {
+//        if(active) {
+//            highlightEffect.activate()
+//        }
+//        else {
+//            highlightEffect.deactivate()
+//        }
+//    }
 
     function fadeOut() {
         fadeOutAnimation.from = 1.0
@@ -76,10 +77,10 @@ EntityBase {
     Component.onCompleted: {
 //        fadeOutAnimation.started.connect(particleEffect.start)
 //        fadeOutAnimation.stopped.connect(particleEffect.stop)
-        fadeOutAnimation.stopped.connect(function() { gameLogic.fadedout(block.entityId)} )
+//        fadeOutAnimation.stopped.connect(function() { gameLogic.fadedout(block.entityId)} )
 //        swapAnimation.stopped.connect(swapFinishedTimer.start)
 
-        fallDownTimer.triggered.connect(fallDownAnimation.start)
+//        fallDownTimer.triggered.connect(fallDownAnimation.start)
 //        swapFinishedTimer.triggered.connect(function(){ swapFinished(_.previousRow, _.previousColumn, block.row, block.column)})
     }
 
@@ -161,13 +162,16 @@ EntityBase {
     NumberAnimation on opacity {
         id: fadeOutAnimation
         duration: 200 //increased for visibility
-
         running: false
+
+        onStopped: gameLogic.fadedout(block.entityId)
     }
 
     NumberAnimation on y {
         id: fallDownAnimation
         running: false
+
+        onStopped: block.falldownFinished()
     }
 
     // one shot timer for delaying fallDownAnimation
@@ -176,6 +180,8 @@ EntityBase {
         interval: fadeOutAnimation.duration
         repeat: false
         running: false
+
+        onTriggered: fallDownAnimation.start()
     }
 
     // timer to wait a bit before signal swap finished
