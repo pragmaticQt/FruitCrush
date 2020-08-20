@@ -74,13 +74,13 @@ EntityBase {
     visible: y >= 0
 
     Component.onCompleted: {
-        fadeOutAnimation.started.connect(particleEffect.start)
-        fadeOutAnimation.stopped.connect(particleEffect.stop)
+//        fadeOutAnimation.started.connect(particleEffect.start)
+//        fadeOutAnimation.stopped.connect(particleEffect.stop)
         fadeOutAnimation.stopped.connect(function() { gameLogic.fadedout(block.entityId)} )
-        swapAnimation.stopped.connect(swapFinishedTimer.start)
+//        swapAnimation.stopped.connect(swapFinishedTimer.start)
 
         fallDownTimer.triggered.connect(fallDownAnimation.start)
-        swapFinishedTimer.triggered.connect(function(){ swapFinished(_.previousRow, _.previousColumn, block.row, block.column)})
+//        swapFinishedTimer.triggered.connect(function(){ swapFinished(_.previousRow, _.previousColumn, block.row, block.column)})
     }
 
     QtObject {
@@ -184,6 +184,8 @@ EntityBase {
       interval: 50
       repeat: false
       running: false
+
+      onTriggered: swapFinished(_.previousRow, _.previousColumn, block.row, block.column)
     }
 
     // animation to move a block after swipe
@@ -191,16 +193,18 @@ EntityBase {
       id: swapAnimation
       target: block
       duration: 150
+
+      onStopped: swapFinishedTimer.start()
     }
 
     // particle effect
-    ParticleEffect {
-        id: particleEffect
-        anchors.centerIn: parent
-    }
+//    ParticleEffect {
+//        id: particleEffect
+//        anchors.centerIn: parent
+//    }
 
-    HighlightEffect {
-        id: highlightEffect
-        anchors.fill: parent
-    }
+//    HighlightEffect {
+//        id: highlightEffect
+//        anchors.fill: parent
+//    }
 }
