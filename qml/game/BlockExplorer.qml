@@ -12,20 +12,24 @@ QtObject {
     //               |
     //               v
     //            (r+1, c)
-    function findHorizontalSpan(field, row, col, type) {
+    function findHorizontalSpan(field, block) {
+        let row = block.row
+        let col = block.column
+        let type = block.type
+
         if (row < 0 || row >= rows)
-            return []
+            return [0,0]
 
         var span = []
-        var nr = 0
+        var nr = 1
         // look left
         while(col - nr >= 0 && field[row][col-nr].type === type) {
             nr++
         }
-        span.push(nr===0 ? 0 : -nr+1)
+        span.push(-nr+1)
 
         // look right
-        nr = 0
+        nr = 1
         while(col + nr < columns && field[row][col+nr].type === type) {
             nr++
         }
@@ -34,9 +38,13 @@ QtObject {
         return span
     }
 
-    function findVerticalSpan(field, row, col, type) {
+    function findVerticalSpan(field, block) {
+        let row = block.row
+        let col = block.column
+        let type = block.type
+
         if (col < 0 || col >= columns)
-            return []
+            return [0,0]
 
         var span = []
         var nr = 1
