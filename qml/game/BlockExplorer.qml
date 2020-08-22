@@ -4,6 +4,7 @@ QtObject {
     id: root
     property int rows: 0
     property int columns: 0
+    property int matches: 3
 
     //            (r-1, c)
     //               ^
@@ -70,5 +71,19 @@ QtObject {
             'origin': {'x':block.row, 'y':block.column},
             'xSpan': findHorizontalSpan(field, block),
             'ySpan': findVerticalSpan(field, block)}
+    }
+
+    function nullConnectedBlocks(field, block) {
+        let result = findConnectedComponent(field, block)
+        let span = result.xSpan
+        if (span[1]-span[0] >= matches) {
+            for (let i = span[0]; i !== span[1]; ++i)
+                field[block.row][block.column+i] = null
+        }
+        span = result.ySpan
+        if (span[1]-span[0] >= matches) {
+            for (let i = span[0]; i !== span[1]; ++i)
+                field[block.row+i][block.column] = null
+        }
     }
 }
