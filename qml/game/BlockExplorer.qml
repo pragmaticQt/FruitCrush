@@ -63,4 +63,12 @@ QtObject {
 
         return span
     }
+
+    function findConnectedComponent(field, block) {
+
+        return {
+            'origin': {'x':block.row, 'y':block.column},
+            'xSpan': findHorizontalSpan(field, block),
+            'ySpan': findVerticalSpan(field, block)}
+    }
 }
